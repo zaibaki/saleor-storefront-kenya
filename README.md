@@ -528,3 +528,69 @@ Want to offer it as a managed service? [Let's talk](https://saleor.io/contact).
   <br/>
   <p>Built with 🖤 by the <a href="https://saleor.io">Saleor</a> team</p>
 </div>
+
+## Kenyan deployment (zaibaki/saleor-storefront-kenya)
+
+This fork of Saleor's Paper storefront is configured for a Kenyan shop running
+against a local Saleor API. It is a fork, not upstream: do not push here
+expecting upstream Saleor to pick it up.
+
+### How to run (Docker)
+
+Prerequisites: the Saleor API running locally (this storefront talks to it at
+`http://api:8000/graphql/` from inside the container network — see
+`docker-compose.yml`, which joins the API's `saleor-platform_saleor-backend-tier`
+network).
+
+```bash
+cp .env.example .env   # if present; otherwise create .env (see below)
+docker compose up -d
+```
+
+The storefront serves on http://localhost:4000/ and redirects `/` to
+`/en/kenya-kes` (the default channel).
+
+### Environment
+
+`.env` is git-ignored and holds only non-secret `NEXT_PUBLIC_*` vars:
+
+| Variable | Value in this deployment |
+| --- | --- |
+| `NEXT_PUBLIC_SALEOR_API_URL` | `http://api:8000/graphql/` |
+| `NEXT_PUBLIC_STOREFRONT_URL` | `http://localhost:4000` |
+| `NEXT_PUBLIC_DEFAULT_CHANNEL` | `kenya-kes` |
+
+`REVALIDATE_SECRET` lives in `docker-compose.yml` (used by `POST /api/revalidate`
+to refresh prerendered pages after content changes). The value committed here
+is a placeholder: **set your own random secret before running**, e.g.
+
+```bash
+openssl rand -hex 32
+```
+
+and put it in `docker-compose.yml` in place of
+`REPLACE_WITH_YOUR_OWN_RANDOM_SECRET`.
+
+### Channel and currency
+
+The default channel is `kenya-kes` (KES, default country KE). Prices render in
+KES; the announcement bar reads "Free shipping on orders over KES 10,000.00"
+(threshold `10000` in `src/lib/content/defaults.ts`, fallback currency `KES` in
+`src/config/locale.ts`). The shop phone in the footer is +254 700 123 456.
+
+### Rebuild
+
+Rebuilds MUST use the classic builder — plain `docker compose build` fails at
+codegen (BuildKit refuses custom networks for build steps):
+
+```bash
+DOCKER_BUILDKIT=0 docker build --network saleor-platform_saleor-backend-tier \
+  --build-arg NEXT_PUBLIC_SALEOR_API_URL=http://api:8000/graphql/ \
+  --build-arg NEXT_PUBLIC_STOREFRONT_URL=http://localhost:4000 \
+  --build-arg NEXT_PUBLIC_DEFAULT_CHANNEL=kenya-kes \
+  -t saleor-storefront-saleor-storefront .
+docker compose up -d
+```
+
+After a rebuild, prerendered pages may be stale; refresh them with
+`POST /api/revalidate` using your `REVALIDATE_SECRET`.

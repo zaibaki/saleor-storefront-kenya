@@ -50,6 +50,9 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-inverse-subtle">{brandConfig.tagline}</p>
+						<a href="tel:+254700123456" className="mt-3 block text-sm text-inverse-subtle transition-colors hover:text-inverse">
+							+254 700 123 456
+						</a>
 					</div>
 
 					<FooterMenuColumns items={footerMenuItems} />

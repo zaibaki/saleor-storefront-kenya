@@ -146,7 +146,7 @@ export const localeConfig = {
 	htmlLang: LOCALE_DEFINITIONS.en.htmlLang,
 	ogLocale: LOCALE_DEFINITIONS.en.ogLocale,
 	available: getLocaleBcp47List(),
-	fallbackCurrency: "USD",
+	fallbackCurrency: "KES",
 } as const;
 
 export function resolveLocaleFromSlug(slug: string): LocaleDefinition {

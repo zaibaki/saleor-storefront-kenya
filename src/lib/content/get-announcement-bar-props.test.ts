@@ -20,11 +20,11 @@ const baseContent: StorefrontContent = {
 describe("buildAnnouncementBarContent", () => {
 	it("interpolates policy tokens into the announcement message", () => {
 		const props = buildAnnouncementBarContent(baseContent, {
-			currency: "USD",
+			currency: "KES",
 			localeSlug: "en",
 		});
 
-		expect(props.message).toBe("Free shipping on orders over $75.00");
+		expect(props.message).toBe("Free shipping on orders over KES 10,000.00");
 		expect(props.id).toBe("summer-sale");
 		expect(props.href).toBe("/collections/sale");
 		expect(props.dismissible).toBe(true);
@@ -32,12 +32,12 @@ describe("buildAnnouncementBarContent", () => {
 
 	it("formats the threshold for the browse locale", () => {
 		const props = buildAnnouncementBarContent(baseContent, {
-			currency: "USD",
+			currency: "KES",
 			localeSlug: "pl",
 		});
 
 		expect(props.linkLabel).toBe("Shop sale");
-		expect(props.message).toContain("75");
+		expect(props.message).toContain("10,000");
 		expect(props.message).not.toContain("{freeShippingThreshold}");
 	});
 });
