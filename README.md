@@ -571,12 +571,25 @@ openssl rand -hex 32
 and put it in `docker-compose.yml` in place of
 `REPLACE_WITH_YOUR_OWN_RANDOM_SECRET`.
 
+`SALEOR_APP_TOKEN` lives in `docker-compose.yml` next to it. It is the token
+of a Saleor App named `Storefront` with the `MANAGE_CHANNELS` permission, and
+lets the storefront read the channels list from the API (channel currency and
+default country) instead of falling back to the configured `KES` fallback in
+`src/config/locale.ts`. Mint it in the Saleor Dashboard under Apps (create app,
+grant `MANAGE_CHANNELS`, create a token) or with the `appCreate` /
+`appTokenCreate` GraphQL mutations, and put the token in `docker-compose.yml`
+in place of `REPLACE_WITH_YOUR_OWN_RANDOM_SECRET`. The value committed here
+is a placeholder: never commit a real token. The token does NOT have
+`MANAGE_ORDERS`, so guest order lookup stays unavailable.
+
 ### Channel and currency
 
 The default channel is `kenya-kes` (KES, default country KE). Prices render in
 KES; the announcement bar reads "Free shipping on orders over KES 10,000.00"
 (threshold `10000` in `src/lib/content/defaults.ts`, fallback currency `KES` in
-`src/config/locale.ts`). The shop phone in the footer is +254 700 123 456.
+`src/config/locale.ts`). The shop phone in the footer is +254 700 123 456. The channel currency is
+read live from the API via `SALEOR_APP_TOKEN`; the `KES` fallback in
+`src/config/locale.ts` applies only when the API or token is unavailable.
 
 ### Rebuild
 

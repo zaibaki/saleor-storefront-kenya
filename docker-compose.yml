@@ -13,6 +13,7 @@ services:
     environment:
       - HOSTNAME=0.0.0.0
       - REVALIDATE_SECRET=REPLACE_WITH_YOUR_OWN_RANDOM_SECRET
+      - SALEOR_APP_TOKEN=REPLACE_WITH_YOUR_OWN_RANDOM_SECRET
     ports:
       - 4000:3000
     networks:
